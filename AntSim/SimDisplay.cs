@@ -17,6 +17,9 @@ namespace AntSim
         private System.Drawing.Pen blackPen = new System.Drawing.Pen(Color.Black, 1F);
         private System.Drawing.Pen bluePen = new System.Drawing.Pen(Color.Blue, 1F);
         private System.Drawing.Pen redPen = new System.Drawing.Pen(Color.Red, 1F);
+        private SolidBrush darkRedBrush = new SolidBrush(Color.DarkRed);
+        private SolidBrush redBrush = new SolidBrush(Color.Red);
+        private SolidBrush orangeRedBrush = new SolidBrush(Color.OrangeRed);
 
         System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
 
@@ -60,14 +63,23 @@ namespace AntSim
             // draw home
             int homeSize = homeDimensions * scale;
             g.DrawRectangle(blackPen, homeStart.X * scale, homeStart.Y * scale, homeSize, homeSize);
-
+            
             // draw each cell
             foreach(Cell c in sim.World.AllCells)
             {
                 // draw available food squares
-                if(c.AvailableFood > 0) 
+                if(c.AvailableFood > 20) 
                 {
-                    g.DrawRectangle(redPen, c.Location.X * scale, c.Location.Y * scale, scale, scale);
+                    //g.DrawRectangle(redPen, c.Location.X * scale, c.Location.Y * scale, scale, scale);
+                    g.FillRectangle(darkRedBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale, scale));
+                }
+                else if(c.AvailableFood > 10)
+                {
+                    g.FillRectangle(redBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale, scale));
+                }
+                else if(c.AvailableFood > 0)
+                {
+                    g.FillRectangle(orangeRedBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale, scale));
                 }
 
                 // draw ant
