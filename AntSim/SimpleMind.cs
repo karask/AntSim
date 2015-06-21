@@ -25,11 +25,11 @@ namespace AntSim
         {
             if (currentCell.hasFood() && !currentCell.IsHome)
                 return Action.TakeFood;
-            else if (ahead != null && ahead.hasFood() && !ahead.IsHome)// && ahead.Ant == null)
+            else if (ahead != null && ahead.hasFood() && !ahead.IsHome && ahead.Ant == null)
                 return Action.MoveForward;
-            else if (aheadLeft != null && aheadLeft.hasFood() && !aheadLeft.IsHome)// && aheadLeft.Ant == null)
+            else if (aheadLeft != null && aheadLeft.hasFood() && !aheadLeft.IsHome && aheadLeft.Ant == null)
                 return Action.TurnLeft;
-            else if (aheadRight != null && aheadRight.hasFood() && !aheadRight.IsHome)// && aheadRight.Ant == null)
+            else if (aheadRight != null && aheadRight.hasFood() && !aheadRight.IsHome && aheadRight.Ant == null)
                 return Action.TurnRight;
 
             else 
