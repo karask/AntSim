@@ -9,7 +9,9 @@ namespace AntSim
     public class Simulator
     {
         private const int maxFoodQuantity = 30;
-        private const int maxFoodCells = 50;
+        private const int maxFoodCells = 10;
+        private const int maxAnts = 53;
+        private const float diminishPheremonePC = 0.9F;
 
         public World World { get; private set; }
         public List<Ant> Ants { get; private set; }
@@ -28,7 +30,7 @@ namespace AntSim
                 Cell c = World.RandomCell(random);
                 if(c.AvailableFood == 0)
                     c.AvailableFood = maxFoodQuantity;
-                //Cell c = World.RandomCell(random);
+
                 //Console.WriteLine(c.Location.X + "," + c.Location.Y);
             }
 
@@ -38,8 +40,8 @@ namespace AntSim
             //        Console.WriteLine(c.Location.X + " " + c.Location.Y);
             //}
 
-            // add food
-            for (var i = 0; i < 1; i++)
+            // add ants
+            for (var i = 0; i < maxAnts; i++)
             {
                 Cell c = World.RandomHomeCell(random);
                 if (c.Ant == null)
@@ -47,7 +49,7 @@ namespace AntSim
                     c.Ant = new Ant(World, c.Location, (FacingDirection)random.Next(0, 8));
                     Ants.Add(c.Ant);
                 }
-                //Cell c = World.RandomCell(random);
+
                 //Console.WriteLine(c.Location.X + "," + c.Location.Y);
             }
 
@@ -55,9 +57,19 @@ namespace AntSim
 
         public void TimeTick()
         {
+            // diminish pheremone levels
+            foreach(Cell c in World.AllCells)
+            {
+                if(c.HomePheremone > 0)
+                    c.HomePheremone = c.HomePheremone * diminishPheremonePC;
+                if(c.FoodPheremone > 0)
+                    c.FoodPheremone = c.FoodPheremone * diminishPheremonePC;
+            }
+
+            // ants take action
             foreach(Ant a in Ants)
             {
-                Console.WriteLine("Ant was at: " + a.Location.ToString());
+                //Console.WriteLine("Ant was at: " + a.Location.ToString());
 
                 Action action = Action.Idle; ;
                 var simpleMind = new SimpleMind(a.CurrentCell(), a.AheadCells());
@@ -67,7 +79,7 @@ namespace AntSim
                 else
                     action = simpleMind.seekHome();
 
-                Console.WriteLine(action);
+                //Console.WriteLine(action);
 
                 switch (action)
                 {
@@ -90,7 +102,7 @@ namespace AntSim
                         break;
                 }
 
-                Console.WriteLine("Ant is now at: " + a.Location.ToString());
+                //Console.WriteLine("Ant is now at: " + a.Location.ToString());
             }
         }
 

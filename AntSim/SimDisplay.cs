@@ -13,34 +13,44 @@ namespace AntSim
 {
     public partial class SimDisplay : Form
     {
-        private System.Drawing.Graphics g;
+        //private System.Drawing.Graphics g;
         private System.Drawing.Pen blackPen = new System.Drawing.Pen(Color.Black, 1F);
-        private System.Drawing.Pen bluePen = new System.Drawing.Pen(Color.Blue, 1F);
+        private System.Drawing.Pen darkBluePen = new System.Drawing.Pen(Color.DarkBlue, 1F);
         private System.Drawing.Pen redPen = new System.Drawing.Pen(Color.Red, 1F);
         private SolidBrush darkRedBrush = new SolidBrush(Color.DarkRed);
         private SolidBrush redBrush = new SolidBrush(Color.Red);
         private SolidBrush orangeRedBrush = new SolidBrush(Color.OrangeRed);
+        private SolidBrush darkBlueBrush = new SolidBrush(Color.DarkBlue);
+        private SolidBrush blueBrush = new SolidBrush(Color.Blue);
+        private SolidBrush lightBlueBrush = new SolidBrush(Color.LightBlue);
+        private SolidBrush darkGreenBrush = new SolidBrush(Color.DarkGreen);
+        private SolidBrush greenBrush = new SolidBrush(Color.Green);
+        private SolidBrush lightGreenBrush = new SolidBrush(Color.LightGreen);
 
         System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
 
         private int scale = 10;
         private int worldDimensions = 40;
         private int homeDimensions = 5;
+        private int tickIntervals = 10;
         private Location homeStart;
 
         private Simulator sim;
 
         public SimDisplay()
         {
-            //this.SetStyle(ControlStyles.DoubleBuffer, true); 
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true); 
             //this.SetStyle(ControlStyles.ResizeRedraw, true); 
             //this.SetStyle(ControlStyles.AllPaintingInWmPaint, true); 
             //this.SetStyle(ControlStyles.UserPaint, true);
             InitializeComponent();
+
+            //g = this.CreateGraphics();
+
             homeStart = new Location(worldDimensions / 3, worldDimensions / 3);
             sim = new Simulator(worldDimensions, homeDimensions, homeStart);
 
-            timer.Interval = 500;
+            timer.Interval = tickIntervals;
             timer.Tick += new EventHandler(TimerCallBack);
 
         }
@@ -58,34 +68,45 @@ namespace AntSim
             // Call the OnPaint method of the base class.
             base.OnPaint(pe);
 
-            g = this.CreateGraphics();
+            Graphics g = pe.Graphics;
 
             // draw home
             int homeSize = homeDimensions * scale;
-            g.DrawRectangle(blackPen, homeStart.X * scale, homeStart.Y * scale, homeSize, homeSize);
+            g.DrawRectangle(darkBluePen, homeStart.X * scale, homeStart.Y * scale, homeSize, homeSize);
             
             // draw each cell
             foreach(Cell c in sim.World.AllCells)
             {
                 // draw available food squares
                 if(c.AvailableFood > 20) 
-                {
-                    //g.DrawRectangle(redPen, c.Location.X * scale, c.Location.Y * scale, scale, scale);
                     g.FillRectangle(darkRedBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale, scale));
-                }
                 else if(c.AvailableFood > 10)
-                {
                     g.FillRectangle(redBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale, scale));
-                }
                 else if(c.AvailableFood > 0)
-                {
                     g.FillRectangle(orangeRedBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale, scale));
+
+
+                if(c.AvailableFood == 0)
+                {
+                    if(c.FoodPheremone > 20)
+                        g.FillRectangle(darkGreenBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale / 2, scale));
+                    else if(c.FoodPheremone > 10)
+                        g.FillRectangle(greenBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale / 2, scale));
+                    else if(c.FoodPheremone > 0)
+                        g.FillRectangle(lightGreenBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale / 2, scale));
+
+                    if(c.HomePheremone > 20)
+                        g.FillRectangle(darkBlueBrush, new Rectangle(c.Location.X * scale + scale / 2, c.Location.Y * scale, scale / 2, scale));
+                    if(c.HomePheremone > 10)
+                        g.FillRectangle(blueBrush, new Rectangle(c.Location.X * scale + scale / 2, c.Location.Y * scale, scale / 2, scale));
+                    if(c.HomePheremone > 0)
+                        g.FillRectangle(lightBlueBrush, new Rectangle(c.Location.X * scale + scale / 2, c.Location.Y * scale, scale / 2, scale));
                 }
 
                 // draw ant
                 if(c.Ant != null)
                 {
-                    Console.WriteLine("Cell " + c.Location.ToString() + " has ant in it!!!!");
+                    //Console.WriteLine("Cell " + c.Location.ToString() + " has ant in it!!!!");
 
                     Pen pen = c.Ant.HasFood ? redPen : blackPen;
 

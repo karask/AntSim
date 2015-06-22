@@ -9,6 +9,7 @@ namespace AntSim
     public class Ant
     {
         private Location[] directionDelta;
+        private List<Cell> visitedCells;
 
         private World World;
         public Location Location { get; set; }
@@ -32,7 +33,9 @@ namespace AntSim
                 new Location(-1, -1)
             };
 
-            Console.WriteLine(location.ToString());
+            visitedCells = new List<Cell>();
+
+            //Console.WriteLine(location.ToString());
         }
 
         public bool IsForaging()
@@ -50,7 +53,19 @@ namespace AntSim
                 aheadCell.Ant = this;
                 this.Location = aheadCell.Location;
                 currentCell.Ant = null;
-                Console.WriteLine("Moving to: " + Location.ToString());
+
+                // set pheremones and add to history to make sure we don't reset pheremones in the same ant route
+                if(!visitedCells.Contains(aheadCell) && !aheadCell.IsHome)
+                {
+                    if (IsForaging())
+                        aheadCell.FoodPheremone += 1;
+                    else
+                        aheadCell.HomePheremone += 1;
+
+                    visitedCells.Add(aheadCell);
+                }
+
+                //Console.WriteLine("Moving to: " + Location.ToString());
             }
         }
 
@@ -67,6 +82,8 @@ namespace AntSim
             this.HasFood = true;
             Cell c = CurrentCell();
             c.AvailableFood -= 1;
+
+            visitedCells.Clear();
         }
 
         public void DropFood()
@@ -74,6 +91,8 @@ namespace AntSim
             this.HasFood = false;
             Cell c = CurrentCell();
             c.AvailableFood += 1;
+
+            visitedCells.Clear();
         }
 
 
@@ -98,11 +117,11 @@ namespace AntSim
             aheadCells.Add("aheadLeft", checkValidLocation(aheadLeft) ? World.GetCell(aheadLeft) : null);
             aheadCells.Add("aheadRight", checkValidLocation(aheadRight) ? World.GetCell(aheadRight) : null);
 
-            Console.WriteLine(Facing.ToString());
-            foreach(var kValue in aheadCells)
-            {
-                Console.WriteLine(kValue.Key + "=" + kValue.Value.Location.ToString());
-            }
+            //Console.WriteLine(Facing.ToString());
+            //foreach(var kValue in aheadCells)
+            //{
+            //    Console.WriteLine(kValue.Key + "=" + kValue.Value.Location.ToString());
+            //}
             return aheadCells;
         }
 
