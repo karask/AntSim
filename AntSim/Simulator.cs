@@ -9,9 +9,9 @@ namespace AntSim
     public class Simulator
     {
         private const int maxFoodQuantity = 30;
-        private const int maxFoodCells = 10;
-        private const int maxAnts = 53;
-        private const float diminishPheremonePC = 0.9F;
+        private const int maxFoodCells = 20;
+        private const int maxAnts = 10;
+        private const float pheromoneEvaporation = 0.95F;
 
         public World World { get; private set; }
         public List<Ant> Ants { get; private set; }
@@ -57,13 +57,13 @@ namespace AntSim
 
         public void TimeTick()
         {
-            // diminish pheremone levels
+            // diminish pheromone levels
             foreach(Cell c in World.AllCells)
             {
-                if(c.HomePheremone > 0)
-                    c.HomePheremone = c.HomePheremone * diminishPheremonePC;
-                if(c.FoodPheremone > 0)
-                    c.FoodPheremone = c.FoodPheremone * diminishPheremonePC;
+                if(c.FoodPheromone > 0)
+                    c.FoodPheromone = c.FoodPheromone * pheromoneEvaporation;
+                //if (c.HomePheromone > 0)
+                //    c.HomePheromone = c.HomePheromone * pheromoneEvaporation;
             }
 
             // ants take action
@@ -98,6 +98,9 @@ namespace AntSim
                         break;
                     case Action.DropFood:
                         a.DropFood();
+                        a.Turn(4);
+                        break;
+                    case Action.TurnDirection:
                         a.Turn(4);
                         break;
                 }

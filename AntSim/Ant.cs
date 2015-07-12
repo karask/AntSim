@@ -54,15 +54,15 @@ namespace AntSim
                 this.Location = aheadCell.Location;
                 currentCell.Ant = null;
 
-                // set pheremones and add to history to make sure we don't reset pheremones in the same ant route
-                if(!visitedCells.Contains(aheadCell) && !aheadCell.IsHome)
+                // set pheromones and add to history to make sure we don't reset pheromones in the same ant route
+                if (!visitedCells.Contains(currentCell) && !currentCell.IsHome && currentCell.AvailableFood == 0)
                 {
                     if (IsForaging())
-                        aheadCell.FoodPheremone += 1;
+                        currentCell.HomePheromone += 1;
                     else
-                        aheadCell.HomePheremone += 1;
+                        currentCell.FoodPheromone += 1;
 
-                    visitedCells.Add(aheadCell);
+                    visitedCells.Add(currentCell);
                 }
 
                 //Console.WriteLine("Moving to: " + Location.ToString());
@@ -168,7 +168,8 @@ namespace AntSim
         TurnLeft,
         TurnRight,
         TakeFood,
-        DropFood
+        DropFood,
+        TurnDirection
     }
 
 }

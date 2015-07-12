@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AntSim
 {
+    // simple rules: http://mute-net.sourceforge.net/howAnts.shtml
     public class SimpleMind
     {
         private Cell currentCell;
@@ -35,7 +36,7 @@ namespace AntSim
             else if (aheadRight != null && aheadRight.hasFood() && !aheadRight.IsHome && aheadRight.Ant == null)
                 return Action.TurnRight;
             else
-                return actionFromPheremones(aheadCells, false);
+                return actionFromPheromones(aheadCells, false);
 
         }
 
@@ -50,11 +51,11 @@ namespace AntSim
             else if (aheadRight != null && aheadRight.IsHome)
                 return Action.TurnRight;
             else
-                return actionFromPheremones(aheadCells, true);
+                return actionFromPheromones(aheadCells, true);
 
         }
 
-        private Action actionFromPheremones(Dictionary<string, Cell> aheadCells, bool hasFood)
+        private Action actionFromPheromones(Dictionary<string, Cell> aheadCells, bool hasFood)
         {
             // remove null Cell values from dictionary
             foreach (var item in aheadCells.Where(kvp => kvp.Value == null).ToList())
@@ -69,20 +70,20 @@ namespace AntSim
             if(hasFood)
             {
                 // if all ahead same then either move or turn
-                if(aheadCells.All(kvp => kvp.Value.HomePheremone == aheadCells.FirstOrDefault().Value.HomePheremone))
+                if(aheadCells.All(kvp => kvp.Value.HomePheromone == aheadCells.FirstOrDefault().Value.HomePheromone))
                     return (Action)random.Next((int)Action.MoveForward, (int)Action.TakeFood);
 
-                // get string key for cell with max HomePheremone
+                // get string key for cell with max FoodPheromone
                 string maxKey = string.Empty;
-                float maxPheremone = 0;
+                float maxPheromone = 0;
                 foreach (var kvp in aheadCells)
                 {
                     if (kvp.Value != null)
                     {
-                        if (kvp.Value.HomePheremone > maxPheremone)
+                        if (kvp.Value.HomePheromone > maxPheromone)
                         {
                             maxKey = kvp.Key;
-                            maxPheremone = kvp.Value.HomePheremone;
+                            maxPheromone = kvp.Value.HomePheromone;
                         }
                     }
                 }
@@ -105,28 +106,32 @@ namespace AntSim
             else
             {
                 // if all ahead same then either move or turn
-                if (aheadCells.All(kvp => kvp.Value.FoodPheremone == aheadCells.FirstOrDefault().Value.FoodPheremone))
+                if (aheadCells.All(kvp => kvp.Value.FoodPheromone == aheadCells.FirstOrDefault().Value.FoodPheromone))
                     return (Action)random.Next((int)Action.MoveForward, (int)Action.TakeFood);
 
-                // get string key for cell with max HomePheremone
+                // get string key for cell with max HomePheromone
                 string maxKey = string.Empty;
-                float maxPheremone = 0;
+                float maxPheromone = 0;
                 foreach (var kvp in aheadCells)
                 {
                     if (kvp.Value != null)
                     {
-                        if (kvp.Value.FoodPheremone > maxPheremone)
+                        if (kvp.Value.FoodPheromone > maxPheromone)
                         {
                             maxKey = kvp.Key;
-                            maxPheremone = kvp.Value.FoodPheremone;
+                            maxPheromone = kvp.Value.FoodPheromone;
                         }
                     }
                 }
 
+                // if stronger pheromone cell is home (note that we search for food) then turn in the opposite direction
                 switch (maxKey)
                 {
                     case "ahead":
-                        return Action.MoveForward;
+                        if (aheadCells["ahead"].IsHome)
+                            return Action.TurnDirection;
+                        else
+                            return Action.MoveForward;
                         break;
                     case "aheadLeft":
                         return Action.TurnLeft;

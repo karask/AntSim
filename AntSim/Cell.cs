@@ -10,17 +10,17 @@ namespace AntSim
     {
         public Location Location { get; private set; }
         public int AvailableFood { get; set; }
-        public float FoodPheremone { get; set; }
-        public float HomePheremone { get; set; }
+        public float FoodPheromone { get; set; }
+        public float HomePheromone { get; set; }
         public bool IsHome { get; set; }
         public Ant Ant { get; set; }
 
-        public Cell(Location location, int availableFood, int foodPheremone, int homePheremone)
+        public Cell(Location location, int availableFood, int foodPheromone, int homePheromone)
         {
             Location = location;
             AvailableFood = availableFood;
-            FoodPheremone = foodPheremone;
-            HomePheremone = homePheremone;
+            FoodPheromone = foodPheromone;
+            HomePheromone = homePheromone;
             IsHome = false;
             Ant = null;
         }
