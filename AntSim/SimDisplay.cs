@@ -26,6 +26,9 @@ namespace AntSim
         private SolidBrush darkGreenBrush = new SolidBrush(Color.DarkGreen);
         private SolidBrush greenBrush = new SolidBrush(Color.Green);
         private SolidBrush lightGreenBrush = new SolidBrush(Color.LightGreen);
+        private SolidBrush darkGoldenRodBrush = new SolidBrush(Color.DarkGoldenrod);
+        private SolidBrush goldeRodBrush = new SolidBrush(Color.Goldenrod);
+        private SolidBrush lightGoldenrodYellowBrush = new SolidBrush(Color.LightGoldenrodYellow);
 
         System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
 
@@ -102,11 +105,11 @@ namespace AntSim
                     //}
 
                     if (c.FoodPheromone > 20)
-                        g.FillRectangle(darkGreenBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale / 2, scale));
+                        g.FillRectangle(darkGoldenRodBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale / 2, scale));
                     else if (c.FoodPheromone > 10)
-                        g.FillRectangle(greenBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale / 2, scale));
+                        g.FillRectangle(goldeRodBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale / 2, scale));
                     else if (c.FoodPheromone > 0)
-                        g.FillRectangle(lightGreenBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale / 2, scale));
+                        g.FillRectangle(lightGoldenrodYellowBrush, new Rectangle(c.Location.X * scale, c.Location.Y * scale, scale / 2, scale));
 
                     if (c.HomePheromone > 20)
                         g.FillRectangle(darkBlueBrush, new Rectangle(c.Location.X * scale + scale / 2, c.Location.Y * scale, scale / 2, scale));
